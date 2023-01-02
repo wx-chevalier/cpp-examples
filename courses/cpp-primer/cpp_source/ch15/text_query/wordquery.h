@@ -9,28 +9,23 @@
  *No public members defined in this class. All operation are through the friend
  *class Query.
  */
-class WordQuery : public Query_base
-{
-    // class Query uses the WordQuery constructor
-    friend class Query;
-    WordQuery(const std::string& s):
-        query_word(s)
-    {
-        std::cout << "WordQuery::WordQuery(" + s + ")\n";
-    }
+class WordQuery : public Query_base {
+  // class Query uses the WordQuery constructor
+  friend class Query;
+  WordQuery(const std::string &s) : query_word(s) {
+    std::cout << "WordQuery::WordQuery(" + s + ")\n";
+  }
 
+  // virtuals:
+  QueryResult eval(const TextQuery &t) const override {
+    return t.query(query_word);
+  }
+  std::string rep() const override {
+    std::cout << "WodQuery::rep()\n";
+    return query_word;
+  }
 
-    // virtuals:
-    QueryResult eval(const TextQuery& t) const override
-    {   return t.query(query_word); }
-    std::string rep() const override
-    {
-        std::cout << "WodQuery::rep()\n";
-        return query_word;
-    }
-
-
-    std::string query_word;
+  std::string query_word;
 };
 
 #endif // WORDQUERY_H

@@ -8,10 +8,6 @@
 int fact(int val);
 int func();
 
-template <typename T>
-T abs(T i)
-{
-    return i >= 0 ? i : -i;
-}
+template <typename T> T abs(T i) { return i >= 0 ? i : -i; }
 
-#endif //CPP_PRIMER_PRACTICE_CHAPTER6_H
+#endif // CPP_PRIMER_PRACTICE_CHAPTER6_H
