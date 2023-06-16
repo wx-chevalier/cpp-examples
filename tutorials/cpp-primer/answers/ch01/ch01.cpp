@@ -6,7 +6,8 @@
 #include "Sales_item.h"
 #include <iostream>
 
-void basic_io() {
+void basic_io()
+{
   std::cout << "Enter two numbers:" << std::endl;
   int v1, v2;
   std::cin >> v1 >> v2;
@@ -14,32 +15,40 @@ void basic_io() {
             << std::endl;
 }
 
-void basic_while() {
+void basic_while()
+{
   int sum = 0, val = 1;
-  while (val <= 10) {
+  while (val <= 10)
+  {
     sum += val;
     ++val;
   }
   std::cout << "Sum of 1 to 10 inclusive is " << sum << std::endl;
 }
 
-void basic_for() {
+void basic_for()
+{
   int sum = 0;
-  for (int val = 1; val <= 10; ++val) {
+  for (int val = 1; val <= 10; ++val)
+  {
     sum += val;
   }
   std::cout << "Sum of 1 to 10 inclusive is " << sum << std::endl;
 }
 
-void basic_if() {
+void basic_if()
+{
   std::cout << "Enter two numbers:" << std::endl;
   int v1, v2;
   std::cin >> v1 >> v2;
   int lower, upper;
-  if (v1 <= v2) {
+  if (v1 <= v2)
+  {
     lower = v1;
     upper = v2;
-  } else {
+  }
+  else
+  {
     lower = v2;
     upper = v1;
   }
@@ -50,7 +59,8 @@ void basic_if() {
             << std::endl;
 }
 
-void basic_cin() {
+void basic_cin()
+{
   int sum = 0, value;
   while (std::cin >> value)
     sum += value;
@@ -59,7 +69,8 @@ void basic_cin() {
 
 void q_1_3() { std::cout << "Hello, World" << std::endl; }
 
-void q_1_4() {
+void q_1_4()
+{
   std::cout << "Enter two numbers:" << std::endl;
   int v1 = 0, v2 = 0;
   std::cin >> v1 >> v2;
@@ -67,7 +78,8 @@ void q_1_4() {
             << std::endl;
 }
 
-void q_1_5() {
+void q_1_5()
+{
   std::cout << "Enter two numbers:" << std::endl;
   int v1 = 0, v2 = 0;
   std::cin >> v1 >> v2;
@@ -80,55 +92,69 @@ void q_1_5() {
   std::cout << std::endl;
 }
 
-void q_1_9() {
+void q_1_9()
+{
   int sum = 0, val = 50;
-  while (val <= 100) {
+  while (val <= 100)
+  {
     sum += val;
     val += 1;
   }
   std::cout << "Sum of 50 to 100 inclusive is " << sum << std::endl;
 }
 
-void q_1_10() {
+void q_1_10()
+{
   int val = 10;
-  while (val >= 0) {
+  while (val >= 0)
+  {
     std::cout << val << " ";
     val -= 1;
   }
   std::cout << std::endl;
 }
 
-void q_1_11() {
+void q_1_11()
+{
   int start = 0, end = 0;
   std::cout << "Please input two num: ";
   std::cin >> start >> end;
-  if (start <= end) {
-    while (start <= end) {
+  if (start <= end)
+  {
+    while (start <= end)
+    {
       std::cout << start << " ";
       ++start;
     }
     std::cout << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "start should be smaller than end !!!";
   }
 }
 
-void q_1_16() {
+void q_1_16()
+{
   int sum = 0;
   for (int value = 0; std::cin >> value;)
     sum += value;
   std::cout << sum << std::endl;
 }
 
-void count_num() {
+void count_num()
+{
   // 统计输入中每个值连续出现了多少次
   int currVal = 0, val = 0;
-  if (std::cin >> currVal) {
+  if (std::cin >> currVal)
+  {
     int cnt = 1;
-    while (std::cin >> val) {
+    while (std::cin >> val)
+    {
       if (val == currVal)
         ++cnt;
-      else {
+      else
+      {
         std::cout << currVal << " occurs " << cnt << " times " << std::endl;
         currVal = val;
         cnt = 1;
@@ -138,12 +164,14 @@ void count_num() {
   }
 }
 
-void q_1_20() {
+void q_1_20()
+{
   for (Sales_item item; std::cin >> item; std::cout << item << std::endl)
     ;
 }
 
-void q_1_21() {
+void q_1_21()
+{
   Sales_item item_1;
   Sales_item item_2;
   std::cin >> item_1;
@@ -153,37 +181,48 @@ void q_1_21() {
   std::cout << "sum of sale items: " << item_1 + item_2 << std::endl;
 }
 
-void q_1_22() {
+void q_1_22()
+{
   Sales_item sum_item;
   std::cin >> sum_item;
   std::cout << sum_item << std::endl;
-  for (Sales_item item; std::cin >> item; std::cout << item << std::endl) {
+  for (Sales_item item; std::cin >> item; std::cout << item << std::endl)
+  {
     sum_item += item;
   }
   std::cout << "sum of sale items: " << sum_item << std::endl;
 }
 
-void q_1_23() {
+void q_1_23()
+{
   Sales_item total;
-  if (std::cin >> total) {
+  if (std::cin >> total)
+  {
     Sales_item trans;
-    while (std::cin >> trans) {
-      if (total.isbn() == trans.isbn()) {
+    while (std::cin >> trans)
+    {
+      if (total.isbn() == trans.isbn())
+      {
         total += trans;
-      } else {
+      }
+      else
+      {
         std::cout << total << std::endl;
         total = trans;
       }
     }
     std::cout << total << std::endl;
-  } else {
+  }
+  else
+  {
     std::cerr << "No data?!" << std::endl;
     return;
   }
 }
 
-int main() {
-  //    basic_io();
+int main()
+{
+  basic_io();
   //    basic_while();
   //    basic_for();
   //    basic_if();
@@ -201,6 +240,6 @@ int main() {
   //    q_1_20();
   //    q_1_21();
   //    q_1_22();
-  q_1_23();
+  // q_1_23();
   return 0;
 }
