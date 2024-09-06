@@ -1,0 +1,111 @@
+name: linux
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        cxx: [ g++-8, g++-10 ]
+        build_type: [ Debug, Release ]
+        std: [ 17 ]
+        os: [ ubuntu-20.04 ]
+        with_tests: [ ON ]
+
+        include:
+          # Build and with g++8
+          - cxx: g++-8
+            std: 17
+            os: ubuntu-20.04
+            with_tests: ON
+            install: sudo apt -o Acquire::Retries=5 install g++-8
+
+            # Build and test as shared library
+          - cxx: g++-10
+            build_type: Release
+            std: 17
+            os: ubuntu-20.04
+            with_tests: ON
+            cmake_options: -DBUILD_SHARED_LIBS=ON -DCMAKE_CXX_VISIBILITY_PRESET=hidden -DCMAKE_VISIBILITY_INLINES_HIDDEN=ON
+
+            # Builds with no exceptions
+          - cxx: g++-10
+            build_type: Release
+            std: 17
+            os: ubuntu-20.04
+            with_tests: OFF
+            cmake_options: -DQUILL_NO_EXCEPTIONS=ON
+
+            # Build and test with valgrind, sanitizers
+          - cxx: g++-10
+            build_type: Release
+            std: 20
+            os: ubuntu-20.04
+            with_tests: ON
+            cmake_options: -DQUILL_USE_VALGRIND=ON
+            ctest_options: -T memcheck
+            install: sudo apt -o Acquire::Retries=5 install valgrind
+
+            # Build and test sanitizers
+          - cxx: clang++-12
+            build_type: Release
+            std: 20
+            os: ubuntu-20.04
+            with_tests: ON
+            cmake_options: -DQUILL_SANITIZE_ADDRESS=ON
+
+            # Build and test sanitizers
+          - cxx: clang++-12
+            build_type: Release
+            std: 20
+            os: ubuntu-20.04
+            with_tests: ON
+            cmake_options: -DQUILL_SANITIZE_THREAD=ON
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Build Environment
+        run: |
+          sudo apt-get update
+          ${{matrix.install}}
+          cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure
+        working-directory: ${{runner.workspace}}/build
+        env:
+          CXX: ${{matrix.cxx}}
+          CXXFLAGS: ${{matrix.cxxflags}}
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=${{matrix.build_type}} ${{matrix.cmake_options}} \
+                -DCMAKE_CXX_STANDARD=${{matrix.std}} -DQUILL_BUILD_TESTS=${{matrix.with_tests}} \
+                -DQUILL_BUILD_EXAMPLES=ON -DQUILL_VERBOSE_MAKEFILE=ON $GITHUB_WORKSPACE
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        run: |
+          threads=`nproc`
+          cmake --build . --config ${{matrix.build_type}} --parallel $threads
+
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        run: |
+          threads=`nproc`
+          ctest --build-config ${{matrix.build_type}} ${{matrix.ctest_options}} --parallel $threads --output-on-failure
+        env:
+          CTEST_OUTPUT_ON_FAILURE: True

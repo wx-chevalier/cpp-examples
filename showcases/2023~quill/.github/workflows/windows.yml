@@ -1,0 +1,78 @@
+
+name: windows
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+jobs:
+  build:
+    # windows-2016 and windows-2019 have MSVC 2017 and 2019 installed
+    # respectively: https://github.com/actions/virtual-environments.
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ windows-2019, windows-2022 ]
+        platform: [ x64 ]
+        build_type: [ Debug, Release ]
+        std: [ 17, 20 ]
+        with_tests: [ ON ]
+
+        include:
+          # Builds with no exceptions
+          - os: windows-2019
+            platform: x64
+            build_type: Release
+            std: 17
+            with_tests: "OFF"
+            cmake_options: -DQUILL_NO_EXCEPTIONS=ON
+
+          # Builds for ARM
+          - os: windows-2019
+            platform: ARM64
+            build_type: Release
+            std: 17
+            with_tests: "OFF"
+
+          - os: windows-2019
+            platform: ARM
+            build_type: Release
+            std: 17
+            with_tests: "OFF"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Build Environment
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure
+        shell: bash         # Use a bash shell for $GITHUB_WORKSPACE.
+        working-directory: ${{runner.workspace}}/build
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=${{matrix.build_type}} ${{matrix.cmake_options}} \
+              -A ${{matrix.platform}} -DCMAKE_CXX_STANDARD=${{matrix.std}} -DQUILL_BUILD_TESTS=${{matrix.with_tests}} \
+              -DQUILL_BUILD_EXAMPLES=ON -DQUILL_VERBOSE_MAKEFILE=ON $GITHUB_WORKSPACE
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        run: |
+          $threads = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
+          cmake --build . --config ${{matrix.build_type}} --parallel $threads
+
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        run: |
+          $threads = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
+          ctest --build-config ${{matrix.build_type}} --parallel $threads --output-on-failure

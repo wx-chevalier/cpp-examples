@@ -1,0 +1,4 @@
+ignore:
+  - "examples"
+  - "include/quill/bundled"
+  - "test"
