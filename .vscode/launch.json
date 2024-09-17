@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/zhangzixiong/Desktop/Workspace/Github/cs-examples/cpp-examples/tutorials/cms/CMS",
+      "program": "/Users/zhangzixiong/Desktop/Workspace/Github/cs-examples/cpp-examples/tutorials/cms/CMS/build/Debug/outDebug"
+    }
+  ]
+}

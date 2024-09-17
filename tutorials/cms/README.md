@@ -1,2 +1,0 @@
-# ContactManagementSystem
-C++ project
